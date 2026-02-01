@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bellavista Rooms | Luxury Stay</title>
+    <!-- Подключение Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Переменные --- */
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #f9f9f9;
+            --accent-color: #c5a059;
+            --accent-hover: #b08d4b;
+            --text-color: #2c2c2c;
+            --light-text: #666;
+            --border-color: #e0e0e0;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lato', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        html {
+            scroll-behavior: smooth; /* Плавный скролл на уровне CSS */
+        }
+
+        body {
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: #fff;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        a, button {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        /* Эффект нажатия (тактильность) */
+        a:active, button:active, .room-card:active {
+            transform: scale(0.98);
+        }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+        img { max-width: 100%; display: block; }
+
+        /* --- Хедер --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        nav ul { display: flex; gap: 30px; }
+
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after { width: 100%; }
+        nav a:hover { color: var(--accent-color); }
+
+        .cta-button {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 12px 28px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            border: 1px solid var(--primary-color);
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            text-align: center;
+            padding: 120px 20px 80px;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; line-height: 1.2; }
+        .hero p { font-size: 1.25rem; color: var(--light-text); font-weight: 300; margin-bottom: 40px; }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: transparent;
+        }
+        
+        .hero-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Комнаты --- */
+        .rooms-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            padding: 40px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .room-card {
+            background: #fff;
+            transition: var(--transition);
+            cursor: pointer; /* Указывает, что карточка кликабельна */
+        }
+
+        .room-card:hover { transform: translateY(-10px); }
+
+        .image-wrapper {
+            overflow: hidden;
+            height: 350px;
+            position: relative;
+        }
+
+        .room-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        /* Подсказка при наведении на фото */
+        .image-wrapper::after {
+            content: 'Click to Enlarge';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .image-wrapper:hover::after { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .image-wrapper:hover .room-image { transform: scale(1.05); }
+
+        .room-details { padding: 25px 10px; text-align: center; }
+        .room-title { font-size: 1.5rem; margin-bottom: 5px; }
+        .room-desc { color: var(--light-text); font-style: italic; margin-bottom: 15px; }
+        .room-price { display: block; font-weight: 700; color: var(--accent-color); margin-bottom: 15px; }
+        
+        .room-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+        }
+        .room-link:hover { border-color: var(--primary-color); }
+
+        /* --- FAQ --- */
+        .faq-section { background-color: var(--secondary-color); padding: 80px 5%; margin-top: 60px; }
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-header { text-align: center; margin-bottom: 40px; }
+        
+        .faq-item { border-bottom: 1px solid #ddd; }
+        .faq-question {
+            padding: 20px 0;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question:hover { color: var(--accent-color); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: #555; }
+        .faq-item.active .faq-question span { transform: rotate(45deg); }
+
+        /* --- Footer --- */
+        footer { background: #111; color: #fff; padding: 80px 5% 20px; }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-column h3 { color: #fff; font-size: 1rem; text-transform: uppercase; margin-bottom: 20px; }
+        .footer-column ul li { margin-bottom: 10px; }
+        .footer-column a { color: #888; text-decoration: none; transition: 0.3s; }
+        .footer-column a:hover { color: #fff; padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 60px; color: #555; font-size: 0.8rem; border-top: 1px solid #222; padding-top: 20px; }
+
+        /* --- UI Компоненты: Модальное окно и Уведомления --- */
+        
+        /* Модальное окно для картинок */
+        .lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+            cursor: zoom-out;
+        }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        .lightbox img { max-height: 90vh; max-width: 90vw; border: 2px solid #fff; box-shadow: 0 0 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s; }
+        .lightbox.active img { transform: scale(1); }
+
+        /* Toast уведомление */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #fff;
+            color: #333;
+            padding: 15px 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 3000;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header id="header">
+        <div class="logo" onclick="showToast('Welcome to Bellavista!')">Bellavista</div>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#rooms">Rooms</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact" onclick="return false;">Contact</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="cta-button" onclick="showToast('Booking Engine Loading...')">Book Now</a>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <h1>Find Your Perfect Room</h1>
+        <p>Thoughtfully designed spaces to match the way you stay. Experience comfort redefined.</p>
+        <a href="#rooms" class="hero-btn">Explore Suites</a>
+    </section>
+
+    <!-- Комнаты -->
+    <div class="rooms-container" id="rooms">
+        <!-- Комната 1 -->
+        <div class="room-card">
+            <div class="image-wrapper" onclick="openLightbox('https://framerusercontent.com/images/5baqDWM1vBNHKw7HCNQPGO3PFTw.jpg?width=1000')">
+                <img src="https://framerusercontent.com/images/5baqDWM1vBNHKw7HCNQPGO3PFTw.jpg?width=1000" alt="Bellavista Premier" class="room-image">
+            </div>
+            <div class="room-details" onclick="showToast('Opening Bellavista Premier Details...')">
+                <h3 class="room-title">Bellavista Premier</h3>
+                <p class="room-desc">The finest way to stay.</p>
+                <span class="room-price">$899 / week</span>
+                <a href="#" class="room-link" onclick="event.preventDefault()">View Details</a>
+            </div>
+        </div>
+
+        <!-- Комната 2 -->
+        <div class="room-card">
+            <div class="image-wrapper" onclick="openLightbox('https://framerusercontent.com/images/y2z8SWTM9KYApISpwHugI0C9TU.jpg?width=1000')">
+                <img src="https://framerusercontent.com/images/y2z8SWTM9KYApISpwHugI0C9TU.jpg?width=1000" alt="Bellavista Signature" class="room-image">
+            </div>
+            <div class="room-details" onclick="showToast('Opening Bellavista Signature Details...')">
+                <h3 class="room-title">Bellavista Signature</h3>
+                <p class="room-desc">Where comfort meets character.</p>
+                <span class="room-price">$799 / week</span>
+                <a href="#" class="room-link" onclick="event.preventDefault()">View Details</a>
+            </div>
+        </div>
+
+        <!-- Комната 3 -->
+        <div class="room-card">
+            <div class="image-wrapper" onclick="openLightbox('https://framerusercontent.com/images/irpzvput8T6wavQdmcsbXA48hjw.jpg?width=1000')">
+                <img src="https://framerusercontent.com/images/irpzvput8T6wavQdmcsbXA48hjw.jpg?width=1000" alt="Bellavista Essential" class="room-image">
+            </div>
+            <div class="room-details" onclick="showToast('Opening Bellavista Essential Details...')">
+                <h3 class="room-title">Bellavista Essential</h3>
+                <p class="room-desc">Everything you need. Nothing you don’t.</p>
+                <span class="room-price">$599 / week</span>
+                <a href="#" class="room-link" onclick="event.preventDefault()">View Details</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+        <div class="faq-container">
+            <div class="faq-header">
+                <h2>Frequently asked questions</h2>
+                <p>Everything you need to know to plan a seamless stay.</p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">What time is check-in? <span>+</span></div>
+                    <div class="faq-answer"><p>Check-in starts at 3:00 PM. We offer contactless check-in via our app.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is breakfast included? <span>+</span></div>
+                    <div class="faq-answer"><p>Yes, a continental luxury breakfast is served daily from 7 AM to 11 AM.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Do you have parking? <span>+</span></div>
+                    <div class="faq-answer"><p>Valet parking is available 24/7 for all our guests at no extra cost.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Bellavista</h3>
+                <p>123 Vista Boulevard<br>Palm Heights, Marina Area</p>
+                <p><a href="tel:+123456789">+1 (234) 567-89</a></p>
+            </div>
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <ul>
+                    <li><a href="#" onclick="showToast('Navigating to About...')">About Us</a></li>
+                    <li><a href="#" onclick="showToast('Navigating to Dining...')">Dining</a></li>
+                    <li><a href="#" onclick="showToast('Navigating to Wellness...')">Wellness</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Social</h3>
+                <ul>
+                    <li><a href="#" onclick="showToast('Opening Instagram...')">Instagram</a></li>
+                    <li><a href="#" onclick="showToast('Opening Twitter...')">Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 Bellavista. Designed for Luxury.
+        </div>
+    </footer>
+
+    <!-- UI Elements -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Zoomed Image">
+    </div>
+
+    <div class="toast" id="toast">
+        Action Completed
+    </div>
+
+    <!-- Скрипты -->
+    <script>
+        // --- 1. FAQ Логика ---
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
+                item.classList.toggle('active');
+                const answer = item.querySelector('.faq-answer');
+                answer.style.maxHeight = item.classList.contains('active') ? answer.scrollHeight + 'px' : null;
+            });
+        });
+
+        // --- 2. Lightbox (Галерея) ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+        }
+
+        // --- 3. Toast (Уведомления) ---
+        let toastTimeout;
+        const toast = document.getElementById('toast');
+
+        function showToast(message) {
+            // Если ссылка пустая (dummy), предотвращаем переход
+            if(event && event.target.tagName === 'A' && event.target.getAttribute('href') === '#') {
+                event.preventDefault();
+            }
+
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- 4. Обработка всех ссылок "заглушек" ---
+        // Добавляем обработчик на все ссылки, у которых нет onclick, чтобы сайт казался живым
+        document.querySelectorAll('a[href="#"]').forEach(link => {
+            if (!link.getAttribute('onclick')) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showToast('Navigating to ' + link.textContent + '...');
+                });
+            }
+        });
+
+        // Скролл хедер эффект
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            header.style.padding = window.scrollY > 50 ? '15px 5%' : '20px 5%';
+            header.style.boxShadow = window.scrollY > 50 ? '0 5px 20px rgba(0,0,0,0.05)' : 'none';
+        });
+
+    </script>
+</body>
+</html>
